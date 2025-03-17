@@ -7,7 +7,6 @@ process IVAR_TRIM_STATS {
         'https://depot.galaxyproject.org/singularity/ivar:1.4--h6b7c446_1' :
         'quay.io/biocontainers/ivar:1.4--h6b7c446_1' }"
 
-
     input:
     tuple val(meta), path(log_file)
     path bed

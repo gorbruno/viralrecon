@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 
-
 """Provide functions to merge multiple versions.yml files."""
-
 
 import yaml
 import platform
 from textwrap import dedent
-
 
 def _make_versions_html(versions):
     """Generate a tabular HTML output of all versions for MultiQC."""
@@ -47,7 +44,6 @@ def _make_versions_html(versions):
         html.append("</tbody>")
     html.append("</table>")
     return "\\n".join(html)
-
 
 def main():
     """Load all version files and generate merged output."""
@@ -95,7 +91,6 @@ def main():
 
     with open("versions.yml", "w") as f:
         yaml.dump(versions_this_module, f, default_flow_style=False)
-
 
 if __name__ == "__main__":
     main()

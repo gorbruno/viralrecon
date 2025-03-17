@@ -5,7 +5,6 @@ import re
 import errno
 import argparse
 
-
 def parse_args(args=None):
     Description = "Collapse LEFT/RIGHT primers in primer BED to single intervals."
     Epilog = """Example usage: python collapse_primer_bed.py <FILE_IN> <FILE_OUT>"""
@@ -31,7 +30,6 @@ def parse_args(args=None):
     )
     return parser.parse_args(args)
 
-
 def make_dir(path):
     if not len(path) == 0:
         try:
@@ -40,13 +38,11 @@ def make_dir(path):
             if exception.errno != errno.EEXIST:
                 raise
 
-
 ## See https://stackoverflow.com/a/480227
 def uniqify(seq):
     seen = set()
     seen_add = seen.add
     return [x for x in seq if not (x in seen or seen_add(x))]
-
 
 def collapse_primer_bed(file_in, file_out, left_primer_suffix, right_primer_suffix):
     start_pos_list = []
@@ -81,11 +77,9 @@ def collapse_primer_bed(file_in, file_out, left_primer_suffix, right_primer_suff
         fout.write(f"{chrom}\t{start}\t{end}\t{primer}\t{score}\t{strand}\n")
     fout.close()
 
-
 def main(args=None):
     args = parse_args(args)
     collapse_primer_bed(args.FILE_IN, args.FILE_OUT, args.LEFT_PRIMER_SUFFIX, args.RIGHT_PRIMER_SUFFIX)
-
 
 if __name__ == "__main__":
     sys.exit(main())

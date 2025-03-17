@@ -12,6 +12,18 @@
 
 nextflow.enable.dsl = 2
 
+/* TODO
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*/
+
+include { ILLUMINA } from './workflows/illumina'
+include { NANOPORE } from './workflows/nanopore'
+
+include { PIPELINE_COMPLETION     } from './subworkflows/local/utils_nfcore_viralrecon_pipeline'
+include { PIPELINE_INITIALISATION } from './subworkflows/local/utils_nfcore_viralrecon_pipeline'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     GENOME PARAMETER VALUES
@@ -39,7 +51,7 @@ params.nextclade_dataset_name      = WorkflowMain.getGenomeAttribute(params, 'ne
 params.nextclade_dataset_reference = WorkflowMain.getGenomeAttribute(params, 'nextclade_dataset_reference', log, primer_set, primer_set_version)
 params.nextclade_dataset_tag       = WorkflowMain.getGenomeAttribute(params, 'nextclade_dataset_tag'      , log, primer_set, primer_set_version)
 
-/*
+/* TODO update initialise
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     VALIDATE & PRINT PARAMETER SUMMARY
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -53,41 +65,67 @@ WorkflowMain.initialise(workflow, params, log)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-if (params.platform == 'illumina') {
-    include { ILLUMINA } from './workflows/illumina'
-} else if (params.platform == 'nanopore') {
-    include { NANOPORE } from './workflows/nanopore'
-}
-
 workflow NFCORE_VIRALRECON {
 
+    main:
     //
     // WORKFLOW: Variant and de novo assembly analysis for Illumina data
     //
     if (params.platform == 'illumina') {
-        ILLUMINA ()
+        ILLUMINA()
+        ch_multiqc_report = ILLUMINA.out.multiqc_report
+        ch_versions       = ILLUMINA.out.versions
 
     //
     // WORKFLOW: Variant analysis for Nanopore data
     //
-    } else if (params.platform == 'nanopore') {
-        NANOPORE ()
+    } 
+    else if (params.platform == 'nanopore') {
+        NANOPORE()
+        ch_multiqc_report = NANOPORE.out.multiqc_report
+        ch_versions       = NANOPORE.out.versions
     }
+
+    emit:
+    multiqc_report = ch_multiqc_report // channel: /path/to/multiqc_report.html
+    versions       = ch_versions       // channel: [ path(versions.yml) ]
 }
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    RUN ALL WORKFLOWS
+    RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-//
-// WORKFLOW: Execute a single named workflow for the pipeline
-// See: https://github.com/nf-core/rnaseq/issues/619
-//
-
 workflow {
-    NFCORE_VIRALRECON ()
+
+    main:
+    //
+    // SUBWORKFLOW: Run initialisation tasks
+    //
+    PIPELINE_INITIALISATION (
+    params.version,
+    params.validate_params,
+    params.monochrome_logs,
+    args,
+    params.outdir,
+    params.input
+    )
+
+    NFCORE_VIRALRECON()
+
+    //
+    // SUBWORKFLOW: Run completion tasks
+    //
+    PIPELINE_COMPLETION (
+        params.email,
+        params.email_on_fail,
+        params.plaintext_email,
+        params.outdir,
+        params.monochrome_logs,
+        params.hook_url,
+        NFCORE_VIRALRECON.out.multiqc_report
+    )
 }
 
 /*

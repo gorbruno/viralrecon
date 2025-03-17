@@ -9,13 +9,10 @@ import argparse
 import pandas as pd
 from utils import save_excel
 
-
 logger = logging.getLogger()
-
 
 pd.set_option("display.max_columns", None)
 pd.set_option("display.max_rows", None)
-
 
 def parser_args(args=None):
     Description = "Create long/wide tables containing variant information."
@@ -81,7 +78,6 @@ def parser_args(args=None):
     )
     return parser.parse_args(args)
 
-
 def make_dir(path):
     if not len(path) == 0:
         try:
@@ -90,13 +86,11 @@ def make_dir(path):
             if exception.errno != errno.EEXIST:
                 raise
 
-
 def get_file_dict(file_dir, file_suffix):
     files = glob.glob(os.path.join(file_dir, f"*{file_suffix}"))
     samples = [os.path.basename(x).removesuffix(f"{file_suffix}") for x in files]
 
     return dict(zip(samples, files))
-
 
 def three_letter_aa_to_one(hgvs_three):
     aa_dict = {
@@ -135,7 +129,6 @@ def three_letter_aa_to_one(hgvs_three):
 
     return hgvs_one
 
-
 ## Returns a pandas dataframe in the format:
 #         CHROM   POS  REF  ALT FILTER   DP  REF_DP  ALT_DP    AF
 # 0  MN908947.3   241    C    T   PASS  642     375     266  0.41
@@ -153,7 +146,6 @@ def ivar_bcftools_query_to_table(bcftools_query_file):
         table["AF"] = table["AF"].round(2)
 
     return table
-
 
 ## Returns a pandas dataframe in the format:
 #         CHROM    POS REF ALT FILTER  DP REF_DP  ALT_DP    AF
@@ -174,7 +166,6 @@ def bcftools_bcftools_query_to_table(bcftools_query_file):
         table.drop("AD", axis=1, inplace=True)
 
     return table
-
 
 ## Returns a pandas dataframe in the format:
 #         CHROM   POS REF ALT FILTER  DP  REF_DP  ALT_DP    AF
@@ -206,7 +197,6 @@ def nanopolish_bcftools_query_to_table(bcftools_query_file):
 
     return table
 
-
 ## Returns a pandas dataframe in the format:
 #         CHROM    POS REF ALT FILTER  DP REF_DP  ALT_DP    AF
 # 0  MN908947.3    241   C   T   PASS  21      0      21  1.00
@@ -227,12 +217,10 @@ def medaka_bcftools_query_to_table(bcftools_query_file):
 
     return table
 
-
 def get_pangolin_lineage(pangolin_file):
     table = pd.read_csv(pangolin_file, sep=",", header="infer")
 
     return table["lineage"][0]
-
 
 def snpsift_to_table(snpsift_file):
     table = pd.read_table(snpsift_file, sep="\t", header="infer")
@@ -255,7 +243,6 @@ def snpsift_to_table(snpsift_file):
     table["HGVS_P_1LETTER"] = pd.Series(aa)
 
     return table
-
 
 def main(args=None):
     args = parser_args(args)
@@ -327,7 +314,6 @@ def main(args=None):
         if args.excel:
             excel_name = args.output_file.replace("csv", "xlsx")
             save_excel(merged_tables, excel_name)
-
 
 if __name__ == "__main__":
     sys.exit(main())

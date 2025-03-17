@@ -58,11 +58,12 @@ process MULTIQC {
 
     ## Parse YAML files dumped by MultiQC to obtain metrics
     multiqc_to_custom_csv.py --platform illumina $args2
-
+    
+    ## TODO: Temporary fix; need to fix validation
     ## Manually remove files that we don't want in the report
-    if grep -q ">skip_assembly<" workflow_summary_mqc.yaml; then
-        rm -f *assembly_metrics_mqc*
-    fi
+    #if grep -q ">skip_assembly<" workflow_summary_mqc.yaml; then
+    rm -f *assembly_metrics_mqc*
+    #fi
 
     if grep -q ">skip_variants<" workflow_summary_mqc.yaml; then
         rm -f *variants_metrics_mqc*

@@ -30,7 +30,7 @@ process MAKE_BED_MASK {
         $args \\
         --reference $fasta \\
         $bam \\
-        $mpileup  \\
+        $mpileup \\
         | awk -v OFS='\\t' '{print \$1, \$2-1, \$2, \$4}' | awk '\$4 < $args2' > lowcov_positions.txt
 
     make_bed_mask.py \\

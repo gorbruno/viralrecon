@@ -13,7 +13,6 @@ import numpy as np
 from Bio import SeqIO
 from scipy.stats import fisher_exact
 
-
 def parse_args(args=None):
     Description = "Convert iVar variants TSV file to VCF format."
     Epilog = """Example usage: python ivar_variants_to_vcf.py <file_in> <file_out>"""
@@ -56,7 +55,6 @@ def parse_args(args=None):
     )
     return parser.parse_args(args)
 
-
 def make_dir(path):
     """
     Description:
@@ -72,7 +70,6 @@ def make_dir(path):
         except OSError as exception:
             if exception.errno != errno.EEXIST:
                 raise
-
 
 def parse_ivar_line(line):
     """
@@ -144,11 +141,9 @@ def parse_ivar_line(line):
         var_type,
     )
 
-
 ######################
 ## FILTER FUNCTIONS ##
 ######################
-
 
 def ivar_filter(pass_test):
     """
@@ -163,7 +158,6 @@ def ivar_filter(pass_test):
         return False
     else:
         return "ft"
-
 
 def strand_bias_filter(format):
     """
@@ -187,7 +181,6 @@ def strand_bias_filter(format):
         return "sb"
     else:
         return False
-
 
 def write_vcf_header(ref, ignore_strand_bias, file_out, filename):
     """
@@ -234,7 +227,6 @@ def write_vcf_header(ref, ignore_strand_bias, file_out, filename):
     fout.write("\n".join(header) + "\n")
     fout.close()
 
-
 def write_vcf_line(chrom, pos, id, ref, alt, filter, qual, info, format, file_out):
     """
     Description:
@@ -274,11 +266,9 @@ def write_vcf_line(chrom, pos, id, ref, alt, filter, qual, info, format, file_ou
     fout.write(oline)
     fout.close()
 
-
 ############################
 ## MERGE CODONS FUNCTIONS ##
 ############################
-
 
 def check_consecutive(mylist):
     """
@@ -306,7 +296,6 @@ def check_consecutive(mylist):
             return False
         return False
 
-
 def get_diff_position(seq1, seq2):
     """
     Description:
@@ -327,7 +316,6 @@ def get_diff_position(seq1, seq2):
         return False
     else:
         return ind_diff[0]
-
 
 def check_merge_codons(q_pos, fe_codon_ref, fe_codon_alt):
     """
@@ -369,7 +357,6 @@ def check_merge_codons(q_pos, fe_codon_ref, fe_codon_alt):
 
     return num_collapse
 
-
 def process_variants(variants, num_collapse):
     """
     Description:
@@ -396,7 +383,6 @@ def process_variants(variants, num_collapse):
         alt += variants[var]["alt"]
 
     return chrom, pos, id, ref, alt, qual, filter, info, format
-
 
 def main(args=None):
     # Process args
@@ -584,11 +570,9 @@ def main(args=None):
     print(row.format(*headers))
     print(row.format(*data))
 
-
 def create_f_string(str_size, placement="^"):
     row_size = "{: " + placement + str(str_size) + "}"
     return row_size
-
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -5,7 +5,6 @@ import sys
 import glob
 import argparse
 
-
 def parse_args(args=None):
     Description = "Generate nf-core/viralrecon samplesheet from a directory of FastQ files."
     Epilog = "Example usage: python fastq_dir_to_samplesheet.py <FASTQ_DIR> <SAMPLESHEET_FILE>"
@@ -60,7 +59,6 @@ def parse_args(args=None):
         help="After splitting FastQ file name by --sanitise_name_delimiter all elements before this index (1-based) will be joined to create final sample name.",
     )
     return parser.parse_args(args)
-
 
 def fastq_dir_to_samplesheet(
     fastq_dir,
@@ -130,7 +128,6 @@ def fastq_dir_to_samplesheet(
         print(error_str)
         sys.exit(1)
 
-
 def main(args=None):
     args = parse_args(args)
 
@@ -144,7 +141,6 @@ def main(args=None):
         sanitise_name_delimiter=args.SANITISE_NAME_DELIMITER,
         sanitise_name_index=args.SANITISE_NAME_INDEX,
     )
-
 
 if __name__ == "__main__":
     sys.exit(main())

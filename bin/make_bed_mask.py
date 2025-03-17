@@ -6,7 +6,6 @@ import re
 import argparse
 import gzip
 
-
 def parse_args(args=None):
     Description = "Find indels positions in bed file"
     Epilog = "Example usage: python make_bed_mask.py <VCF_IN> <BED_IN> <BED_OUT>"
@@ -15,7 +14,6 @@ def parse_args(args=None):
     parser.add_argument("BED_IN", help="Input bed file.")
     parser.add_argument("BED_OUT", help="Name of the output new bed file.")
     return parser.parse_args(args)
-
 
 def find_indels_vcf(vcf_in):
     encoding = "utf-8"
@@ -30,7 +28,6 @@ def find_indels_vcf(vcf_in):
                 if len(ref) != len(alt):
                     indels_pos_len[var_pos] = len(ref)
     return indels_pos_len
-
 
 def make_bed_mask(bed_in, bed_out, indels_pos_len):
     fout = open(bed_out, "w")
@@ -60,12 +57,10 @@ def make_bed_mask(bed_in, bed_out, indels_pos_len):
             if test:
                 fout.write(oline + "\n")
 
-
 def main(args=None):
     args = parse_args(args)
     indels_pos_len = find_indels_vcf(args.VCF_IN)
     make_bed_mask(args.BED_IN, args.BED_OUT, indels_pos_len)
-
 
 if __name__ == "__main__":
     sys.exit(main())

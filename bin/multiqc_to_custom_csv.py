@@ -48,7 +48,6 @@ def parse_args(args=None):
 
     return parser.parse_args(args)
 
-
 def make_dir(path):
     if not len(path) == 0:
         try:
@@ -56,7 +55,6 @@ def make_dir(path):
         except OSError as exception:
             if exception.errno != errno.EEXIST:
                 raise
-
 
 # Find key in dictionary created from YAML file recursively
 # From https://stackoverflow.com/a/37626981
@@ -140,7 +138,6 @@ def yaml_fields_to_dict(yaml_file, append_dict={}, field_mapping_list=[], valid_
                     append_dict[key] = "NA"
 
     return append_dict
-
 
 def metrics_dict_to_file(file_field_list, multiqc_data_dir, out_file, valid_sample_list=[], excel=False):
     metrics_dict = {}
@@ -429,7 +426,6 @@ def main(args=None):
             )
         )
         sys.exit(1)
-
 
 if __name__ == "__main__":
     sys.exit(main())

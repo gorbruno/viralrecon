@@ -5,7 +5,6 @@ import sys
 import errno
 import argparse
 
-
 def parse_args(args=None):
     Description = "Reformat nf-core/viralrecon samplesheet file and check its contents."
     Epilog = "Example usage: python check_samplesheet.py <FILE_IN> <FILE_OUT>"
@@ -23,7 +22,6 @@ def parse_args(args=None):
     )
     return parser.parse_args(args)
 
-
 def make_dir(path):
     if len(path) > 0:
         try:
@@ -31,7 +29,6 @@ def make_dir(path):
         except OSError as exception:
             if exception.errno != errno.EEXIST:
                 raise exception
-
 
 def print_error(error, context="Line", context_str=""):
     error_str = "ERROR: Please check samplesheet -> {}".format(error)
@@ -41,7 +38,6 @@ def print_error(error, context="Line", context_str=""):
         )
     print(error_str)
     sys.exit(1)
-
 
 def check_illumina_samplesheet(file_in, file_out):
     """
@@ -142,7 +138,6 @@ def check_illumina_samplesheet(file_in, file_out):
     else:
         print_error("No entries to process!", "Samplesheet: {}".format(file_in))
 
-
 def check_nanopore_samplesheet(file_in, file_out):
     """
     This function checks that the samplesheet follows the following structure:
@@ -230,7 +225,6 @@ def check_nanopore_samplesheet(file_in, file_out):
     else:
         print_error("No entries to process!", "Samplesheet: {}".format(file_in))
 
-
 def main(args=None):
     args = parse_args(args)
 
@@ -245,7 +239,6 @@ def main(args=None):
             )
         )
         sys.exit(1)
-
 
 if __name__ == "__main__":
     sys.exit(main())

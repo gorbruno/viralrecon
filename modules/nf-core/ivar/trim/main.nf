@@ -7,7 +7,6 @@ process IVAR_TRIM {
         'https://depot.galaxyproject.org/singularity/ivar:1.4--h6b7c446_1' :
         'quay.io/biocontainers/ivar:1.4--h6b7c446_1' }"
 
-
     input:
     tuple val(meta), path(bam), path(bai)
     path bed
@@ -30,7 +29,6 @@ process IVAR_TRIM {
         -b $bed \\
         -p ${prefix}.trimmed \\
         2>&1 | tee ${prefix}.ivar.log
-
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
