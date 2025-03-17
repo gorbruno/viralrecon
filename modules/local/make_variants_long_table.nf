@@ -29,7 +29,7 @@ process MAKE_VARIANTS_LONG_TABLE {
         $args
 
     if [[ $outname != "merged" ]]; then
-        # find . -name "variants_long_table.*" -exec sh -c "mv \$1 ${outname}.variants.\${1##*.}" rename {} \; TODO
+        # TODO: add universal logic
         mv variants_long_table.csv ${outname}.variants.csv
         mv variants_long_table.xlsx ${outname}.variants.xlsx #may fail
     fi

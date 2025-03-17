@@ -59,7 +59,7 @@ process MULTIQC {
     ## Parse YAML files dumped by MultiQC to obtain metrics
     multiqc_to_custom_csv.py --platform illumina $args2
     
-    ## TODO: Temporary fix; need to fix validation
+    ## TODO: Temporary fix; need to fix validation?
     ## Manually remove files that we don't want in the report
     #if grep -q ">skip_assembly<" workflow_summary_mqc.yaml; then
     rm -f *assembly_metrics_mqc*
@@ -81,10 +81,10 @@ process MULTIQC {
     multiqc -f $args -e general_stats $custom_config .
 
     if [[ $outname != "merged" ]]; then
-      # find . -name "*metrics_mqc.*" -exec sh -c 'mv \$1 ${outname}.metrics.\${1##*.}' rename {} \; TODO
-      mv *metrics_mqc.csv ${outname}.metrics.csv
-      mv *metrics_mqc.xlsx ${outname}.metrics.xlsx # may fail :)
-      mv multiqc_report.html ${outname}.multiqc.html
+        # TODO: add universal logic
+        mv *metrics_mqc.csv ${outname}.metrics.csv
+        mv *metrics_mqc.xlsx ${outname}.metrics.xlsx # may fail :)
+        mv multiqc_report.html ${outname}.multiqc.html
     fi
 
     cat <<-END_VERSIONS > versions.yml
