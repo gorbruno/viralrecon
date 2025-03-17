@@ -100,6 +100,7 @@ def fail_barcode_reads = [:]
 
 workflow NANOPORE {
 
+    main:
     ch_versions = Channel.empty()
 
     //
@@ -130,13 +131,13 @@ workflow NANOPORE {
     PREPARE_GENOME
         .out
         .primer_bed
-        .map { [ WorkflowCommons.getColFromFile(it, col=0, uniqify=true, sep='\t') ] }
+        .map { item -> [ WorkflowCommons.getColFromFile(item, col: 0, uniqify: true, sep: '\t') ] }
         .set { ch_bed_contigs }
 
     PREPARE_GENOME
         .out
         .fai
-        .map { [ WorkflowCommons.getColFromFile(it, col=0, uniqify=true, sep='\t') ] }
+        .map { item -> [ WorkflowCommons.getColFromFile(item, col: 0, uniqify: true, sep: '\t') ] }
         .concat(ch_bed_contigs)
         .collect()
         .map { fai, bed -> WorkflowCommons.checkContigsInBED(fai, bed, log) }
@@ -532,21 +533,15 @@ workflow NANOPORE {
             ch_pangolin_multiqc.collect{it[1]}.ifEmpty([]),
             ch_nextclade_multiqc.collectFile(name: 'nextclade_clade_mqc.tsv').ifEmpty([])
         )
-        multiqc_report = MULTIQC.out.report.toList()
+        ch_multiqc_report = MULTIQC.out.report.toList()
     }
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
+    else {
+        ch_multiqc_report = Channel.empty()
     }
-    NfcoreTemplate.summary(workflow, params, log)
+
+    emit:
+    multiqc_report = ch_multiqc_report                        // channel: /path/to/multiqc_report.html
+    versions       = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions // channel: [ path(versions.yml) ]
 }
 
 /*

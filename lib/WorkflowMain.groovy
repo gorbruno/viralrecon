@@ -47,36 +47,36 @@ class WorkflowMain {
     //
     public static void initialise(workflow, params, log) {
         // Print help to screen if required
-        if (params.help) {
-            log.info help(workflow, params, log)
-            System.exit(0)
-        }
+        // if (params.help) {
+        //     log.info help(workflow, params, log)
+        //     System.exit(0)
+        // }
 
         // Print workflow version and exit on --version
-        if (params.version) {
-            String workflow_version = NfcoreTemplate.version(workflow)
-            log.info "${workflow.manifest.name} ${workflow_version}"
-            System.exit(0)
-        }
+        // if (params.version) {
+        //     String workflow_version = NfcoreTemplate.version(workflow)
+        //     log.info "${workflow.manifest.name} ${workflow_version}"
+        //     System.exit(0)
+        // }
 
         // Print parameter summary log to screen
-        log.info paramsSummaryLog(workflow, params, log)
+        // log.info paramsSummaryLog(workflow, params, log)
 
         // Warn about using custom configs to provide pipeline parameters
         // NfcoreTemplate.warnParamsProvidedInConfig(workflow, log)
 
         // Validate workflow parameters via the JSON schema
-        if (params.validate_params) {
-            NfcoreSchema.validateParameters(workflow, params, log)
-        }
+        // if (params.validate_params) {
+        //     NfcoreSchema.validateParameters(workflow, params, log)
+        // }
 
         // Check that a -profile or Nextflow config has been provided to run the pipeline
-        NfcoreTemplate.checkConfigProvided(workflow, log)
+        //NfcoreTemplate.checkConfigProvided(workflow, log)
 
         // Check that conda channels are set-up correctly
-        if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
-            Utils.checkCondaChannels(log)
-        }
+        // if (workflow.profile.tokenize(',').intersect(['conda', 'mamba']).size() >= 1) {
+        //     Utils.checkCondaChannels(log)
+        // }
 
         // Check AWS batch settings
         NfcoreTemplate.awsBatch(workflow, params)

@@ -106,12 +106,13 @@ include { BAM_MARKDUPLICATES_PICARD } from '../subworkflows/nf-core/bam_markdupl
 */
 
 // Info required for completion email and summary
-def multiqc_report    = []
+// def multiqc_report    = []
 def pass_mapped_reads = [:]
 def fail_mapped_reads = [:]
 
 workflow ILLUMINA {
 
+    main:
     ch_versions = Channel.empty()
 
     //
@@ -132,13 +133,13 @@ workflow ILLUMINA {
             .out
             .primer_bed
             .map { WorkflowCommons.checkPrimerSuffixes(it, params.primer_left_suffix, params.primer_right_suffix, log) }
-
+        // TODO: update validation
         // Check whether the contigs in the primer BED file are present in the reference genome
-        PREPARE_GENOME
-            .out
-            .primer_bed
-            .map { [ WorkflowCommons.getColFromFile(it, col=0, uniqify=true, sep='\t') ] }
-            .set { ch_bed_contigs }
+        // PREPARE_GENOME
+        //     .out
+        //     .primer_bed
+        //     .map { [ WorkflowCommons.getColFromFile(it, col=0, uniqify=true, sep='\t') ] }
+        //     .set { ch_bed_contigs }
 
         // PREPARE_GENOME
         //     .out
@@ -684,21 +685,15 @@ workflow ILLUMINA {
             ch_unicycler_quast_multiqc.collect().ifEmpty([]),
             ch_minia_quast_multiqc.collect().ifEmpty([])
         )
-        multiqc_report = MULTIQC.out.report.toList()
+        ch_multiqc_report = MULTIQC.out.report.toList()
     }
-}
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report, fail_mapped_reads)
+    else {
+        ch_multiqc_report = Channel.empty()
     }
-    NfcoreTemplate.summary(workflow, params, log, fail_mapped_reads, pass_mapped_reads)
+
+    emit:
+    multiqc_report = ch_multiqc_report                        // channel: /path/to/multiqc_report.html
+    versions       = CUSTOM_DUMPSOFTWAREVERSIONS.out.versions // channel: [ path(versions.yml) ]
 }
 
 /*
