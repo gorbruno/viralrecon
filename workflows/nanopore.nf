@@ -333,9 +333,9 @@ workflow NANOPORE {
     //
     BCFTOOLS_STATS (
         VCFLIB_VCFUNIQ.out.vcf.join(TABIX_TABIX.out.tbi, by: [0]),
-        [],
-        [],
-        []
+        [ [:], [:] ],
+        [ [:], [:] ],
+        [ [:], [:] ]
     )
     ch_versions = ch_versions.mix(BCFTOOLS_STATS.out.versions.first().ifEmpty(null))
 

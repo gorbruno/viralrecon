@@ -23,9 +23,9 @@ workflow VCF_TABIX_STATS {
 
     BCFTOOLS_STATS (
         vcf.join(TABIX_TABIX.out.tbi, by: [0]),
-        regions,
-        targets,
-        samples
+        regions.map { [ [:], it ] },
+        targets.map { [ [:], it ] },
+        samples.map { [ [:], it ] }
     )
     ch_versions = ch_versions.mix(BCFTOOLS_STATS.out.versions.first())
 

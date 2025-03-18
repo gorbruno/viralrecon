@@ -68,7 +68,7 @@ workflow CONSENSUS_BCFTOOLS {
     // Call consensus sequence with BCFTools
     //
     BCFTOOLS_CONSENSUS (
-        BCFTOOLS_FILTER.out.vcf.join(TABIX_TABIX.out.tbi, by: [0]).join(BEDTOOLS_MASKFASTA.out.fasta, by: [0])
+        BCFTOOLS_FILTER.out.vcf.join(TABIX_TABIX.out.tbi, by: [0]).join(BEDTOOLS_MASKFASTA.out.fasta, by: [0]).join(BEDTOOLS_MERGE.out.bed, by: [0])
     )
     ch_versions = ch_versions.mix(BCFTOOLS_CONSENSUS.out.versions.first())
 
