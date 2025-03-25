@@ -431,6 +431,12 @@
                     "description": "Minimum number of mapped reads below which samples are removed from further processing. Some downstream steps in the pipeline will fail if this threshold is too low.",
                     "fa_icon": "fas fa-hand-paper"
                 },
+                "min_depth": {
+                    "type": "integer",
+                    "default": 10,
+                    "description": "Minimum depth of mapped reads below which bases are masked. Variant calling also discard bases with depth below this threshold.",
+                    "fa_icon": "fas fa-hand-paper"
+                },
                 "ivar_trim_noprimer": {
                     "type": "boolean",
                     "description": "This option unsets the '-e' parameter in 'ivar trim' to discard reads without primers.",
