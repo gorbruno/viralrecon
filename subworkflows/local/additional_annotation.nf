@@ -18,6 +18,8 @@ workflow ADDITIONAL_ANNOTATION {
     fasta    // path   : genome.fasta
     annot    // path   : additional_annotation
     pangolin // channel: [ val(meta), [ csv ] ]
+    outname  // channel: [ val outname ]
+
 
     main:
 
@@ -84,7 +86,8 @@ workflow ADDITIONAL_ANNOTATION {
     MAKE_VARIANTS_LONG_TABLE_ADDITIONAL (
         BCFTOOLS_QUERY.out.output.collect{it[1]},
         SNPSIFT_EXTRACTFIELDS.out.txt.collect{it[1]}.ifEmpty([]),
-        pangolin.collect{it[1]}.ifEmpty([])
+        pangolin.collect{it[1]}.ifEmpty([]),
+        outname
     )
     ch_versions = ch_versions.mix(MAKE_VARIANTS_LONG_TABLE_ADDITIONAL.out.versions)
 

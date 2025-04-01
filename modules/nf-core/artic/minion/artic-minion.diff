@@ -1,4 +1,15 @@
 Changes in component 'nf-core/artic/minion'
+Changes in 'artic/minion/environment.yml':
+--- modules/nf-core/artic/minion/environment.yml
++++ modules/nf-core/artic/minion/environment.yml
+@@ -4,5 +4,5 @@
+   - conda-forge
+   - bioconda
+ dependencies:
+-  - bioconda::artic=1.6.1
++  - bioconda::artic=1.2.4
+   - bioconda::htslib=1.17
+
 'modules/nf-core/artic/minion/meta.yml' is unchanged
 Changes in 'artic/minion/main.nf':
 --- modules/nf-core/artic/minion/main.nf
@@ -62,7 +73,6 @@ Changes in 'artic/minion/main.nf':
  
      cat <<-END_VERSIONS > versions.yml
 
-'modules/nf-core/artic/minion/environment.yml' is unchanged
-'modules/nf-core/artic/minion/tests/main.nf.test' is unchanged
 'modules/nf-core/artic/minion/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/artic/minion/tests/main.nf.test' is unchanged
 ************************************************************
