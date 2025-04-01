@@ -28,7 +28,7 @@ process IVAR_TRIM {
         -i $bam \\
         -b $bed \\
         -p $prefix \\
-        > ${prefix}.ivar.log
+        2>&1 | tee ${prefix}.ivar.log
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
