@@ -737,11 +737,12 @@ class IvarVariants:
             processed_vcf = processed_vcf.rename(
                 columns={"REGION": "#CHROM", "FILENAME": self.filename}
             )
+            self.vcf = processed_vcf
             if consensus:
                 filepath = self.file_out
             else:
-                basename = os.path.splitext(os.path.basename(self.file_out))[0]
-                filename = str(basename) + "_all_hap.vcf"
+                self.basename = os.path.splitext(os.path.basename(self.file_out))[0]
+                filename = str(self.basename) + "_all_hap.vcf"
                 filepath = os.path.join(os.path.dirname(self.file_out), filename)
             with open(filepath, "w") as file_out:
                 file_out.write(vcf_header + "\n")
@@ -751,6 +752,27 @@ class IvarVariants:
         export_vcf(vcf_table, consensus=False)
         return
 
+    def write_stdout(self):
+        """Summarize variant counts to pass to MultiQC"""
+        variant_types: pd.Series = self.vcf["INFO"].str.replace("TYPE=", "")
+        counts = variant_types.value_counts()
+        var_count_dict = counts.to_dict()
+
+        var_count_list = [(k, str(v)) for k, v in sorted(var_count_dict.items())]
+
+        def create_f_string(str_size, placement="^"):
+            row_size = "{: " + placement + str(str_size) + "}"
+            return row_size
+
+        row = create_f_string(30, "<")  # an arbitraily long value to fit most sample names
+        row += create_f_string(10) * len(var_count_list)  # A spacing of ten looks pretty
+
+        headers = ["sample"]
+        headers.extend([x[0] for x in var_count_list])
+        data = [self.basename]
+        data.extend([x[1] for x in var_count_list])
+        print(row.format(*headers))
+        print(row.format(*data))
 
 def make_dir(path):
     """
@@ -784,6 +806,7 @@ def main(args=None):
         fasta=args.fasta,
     )
     ivar_to_vcf.write_vcf()
+    ivar_to_vcf.write_stdout()
     return
 
 
