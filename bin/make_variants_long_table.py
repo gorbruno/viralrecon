@@ -4,12 +4,10 @@ import os
 import sys
 import glob
 import errno
-import shutil
 import logging
 import argparse
 import pandas as pd
-from matplotlib import table
-
+from utils import save_excel
 
 logger = logging.getLogger()
 
@@ -70,6 +68,12 @@ def parser_args(args=None):
         type=str,
         default="variants_long_table.csv",
         help="Full path to output file (default: 'variants_long_table.csv').",
+    )
+    parser.add_argument(
+        "--excel",
+        action="store_true",
+        default=False,
+        help="Create corresponding excel table."
     )
     parser.add_argument(
         "-vc", "--variant_caller", type=str, default="ivar", help="Tool used to call the variants (default: 'ivar')."
@@ -360,7 +364,9 @@ def main(args=None):
     if sample_tables:
         merged_tables = pd.concat(sample_tables)
         merged_tables.to_csv(args.output_file, index=False, encoding="utf-8-sig")
-
+        if args.excel:
+            excel_name = args.output_file.replace("csv", "xlsx")
+            save_excel(merged_tables, excel_name)
 
 if __name__ == "__main__":
     sys.exit(main())
