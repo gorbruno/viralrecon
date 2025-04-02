@@ -737,7 +737,7 @@ class IvarVariants:
             processed_vcf = processed_vcf.rename(
                 columns={"REGION": "#CHROM", "FILENAME": self.filename}
             )
-            self.vcf = processed_vcf
+            self.processed_vcf = processed_vcf
             if consensus:
                 filepath = self.file_out
             else:
@@ -754,7 +754,7 @@ class IvarVariants:
 
     def write_stdout(self):
         """Summarize variant counts to pass to MultiQC"""
-        variant_types: pd.Series = self.vcf["INFO"].str.replace("TYPE=", "")
+        variant_types: pd.Series = self.processed_vcf["INFO"].str.replace("TYPE=", "")
         counts = variant_types.value_counts()
         var_count_dict = counts.to_dict()
 
