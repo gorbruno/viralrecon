@@ -754,10 +754,11 @@ class IvarVariants:
 
     def write_stdout(self):
         """Summarize variant counts to pass to MultiQC"""
-        variant_types: pd.Series = self.processed_vcf["INFO"].str.replace("TYPE=", "")
-        counts = variant_types.value_counts()
-        var_count_dict = counts.to_dict()
+        variant_types = ["SNP", "DEL", "INS"]
+        variant_col: pd.Series = self.processed_vcf["INFO"].str.replace("TYPE=", "")
+        variant_counts = variant_col.value_counts().to_dict()
 
+        var_count_dict = {var_type: variant_counts.get(var_type, 0) for var_type in variant_types}
         var_count_list = [(k, str(v)) for k, v in sorted(var_count_dict.items())]
 
         def create_f_string(str_size, placement="^"):
