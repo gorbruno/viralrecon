@@ -35,6 +35,7 @@ Thank you to everyone else that has contributed by reporting bugs, enhancements 
 - [[PR #452](https://github.com/nf-core/viralrecon/pull/452)] - Fix `ch_blast_db` to have correct cardinality for blast/blastn
 - [[PR #486](https://github.com/nf-core/viralrecon/pull/486)] - Updated local modules version
 - [[PR #491](https://github.com/nf-core/viralrecon/pull/491)] - Remove asciiigenome
+- [[PR #493](https://github.com/nf-core/viralrecon/pull/493)] - Fix empty iVar variants MultiQC field
 
 ### Parameters
 
